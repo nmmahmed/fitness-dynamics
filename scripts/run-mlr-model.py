@@ -147,7 +147,7 @@ def fit_models(
     path,
     save,
     pivot=None,
-    temporal_aggregation=None,
+    aggregation_frequency=None,
 ):
     multi_posterior = ef.MultiPosterior()
 
@@ -158,7 +158,7 @@ def fit_models(
             raw_seq=raw_seq,
             pivot=pivot,
             group="location",
-            temporal_aggregation=temporal_aggregation,
+            aggregation_frequency=aggregation_frequency,
         )
 
         # Fit model
@@ -179,7 +179,7 @@ def fit_models(
                 continue
 
             data = ef.VariantFrequencies(
-                raw_seq=raw_seq, pivot=pivot, temporal_aggregation=temporal_aggregation
+                raw_seq=raw_seq, pivot=pivot, aggregation_frequency=aggregation_frequency
             )
 
             # Fit model
@@ -380,7 +380,7 @@ if __name__ == "__main__":
         help="Generation time to use. Overrides model.generation_time in config.",
     )
     parser.add_argument(
-        "--temporal-aggregation",
+        "--aggregation-frequency",
         type=str,
         help="Frequency at which to aggregate temporally. Overrides model.temporal-aggregation in config.",
     )
@@ -392,6 +392,7 @@ if __name__ == "__main__":
         + "Default is false if unspecified.",
     )
     args = parser.parse_args()
+    print(ef.__version__)
 
     # Load configuration, data, and create model
     config = MLRConfig(args.config)
@@ -438,9 +439,9 @@ if __name__ == "__main__":
 
     # Decide level of temporal aggregation
     # Use mlr config
-    temporal_aggregation = None
-    if args.temporal_aggregation:
-        temporal_aggregation = args.generation_time
+    aggregation_frequency = None
+    if args.aggregation_frequency:
+        aggregation_frequency = args.generation_time
 
     # Fit or load model results
     if fit:
@@ -454,7 +455,7 @@ if __name__ == "__main__":
             export_path,
             save,
             pivot=pivot,
-            temporal_aggregation=args.temporal_aggregation,
+            aggregation_frequency=args.aggregation_frequency,
         )
     elif load:
         print("Loading results")
